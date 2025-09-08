@@ -1,0 +1,30 @@
+name: Mirror Docker Image to GHCR
+
+on:
+  workflow_dispatch:   # run manually
+  schedule:
+    - cron: "0 0 * * *"  # optional: run daily to keep updated
+
+jobs:
+  mirror:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Log in to GHCR
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Pull from Docker Hub
+        run: docker pull ygkkk/argosb:latest
+
+      - name: Retag for GHCR
+        run: docker tag ygkkk/argosb:latest ghcr.io/${{ github.repository_owner }}/argosb:latest
+
+      - name: Push to GHCR
+        run: docker push ghcr.io/${{ github.repository_owner }}/argosb:latest
