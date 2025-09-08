@@ -1,9 +1,9 @@
-name: Mirror Docker Image to GHCR
+name: Mirror argosb image to GHCR
 
 on:
-  workflow_dispatch:   # run manually
+  workflow_dispatch:   # run manually from GitHub Actions tab
   schedule:
-    - cron: "0 0 * * *"  # optional: run daily to keep updated
+    - cron: "0 3 * * *"  # optional: run daily at 03:00 UTC
 
 jobs:
   mirror:
@@ -24,7 +24,7 @@ jobs:
         run: docker pull ygkkk/argosb:latest
 
       - name: Retag for GHCR
-        run: docker tag ygkkk/argosb:latest ghcr.io/${{ github.repository_owner }}/argosb:latest
+        run: docker tag ygkkk/argosb:latest ghcr.io/${{ github.actor }}/argosb:latest
 
       - name: Push to GHCR
-        run: docker push ghcr.io/${{ github.repository_owner }}/argosb:latest
+        run: docker push ghcr.io/${{ github.actor }}/argosb:latest
